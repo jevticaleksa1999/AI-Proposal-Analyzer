@@ -1,0 +1,22 @@
+{
+  "name": "Aleksa",
+  "title": "Software Engineer",
+  "tech_skills": [
+    "python",
+    "javascript",
+    "react",
+    "php",
+    "mysql",
+    "html",
+    "css",
+    "rest api",
+    "git"
+  ],
+  "soft_skills": [
+    "communication",
+    "problem solving",
+    "self-motivated",
+    "teamwork",
+    "attention to detail"
+  ]
+}

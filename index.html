@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>AI Proposal Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="page">
+    <header class="header">
+        <div class="header-main">
+            <h1>AI Proposal Analyzer</h1>
+            <p>Paste a job description and get instant insights for a stronger proposal.</p>
+        </div>
+        {% if profile %}
+            <div class="header-profile">
+                <div class="profile-label">Profile</div>
+                <div class="profile-name">{{ profile.name }}</div>
+                <div class="profile-title">{{ profile.title }}</div>
+            </div>
+        {% endif %}
+    </header>
+
+    <main class="layout">
+        <section class="card card-form">
+            <h2>Job description</h2>
+            <p class="card-subtitle">Copy–paste a job post from Upwork, LinkedIn or any freelancing platform.</p>
+
+            {% if error %}
+                <div class="alert alert-error">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <form method="POST" class="form">
+                <label for="job_description" class="label">Job description</label>
+                <textarea id="job_description"
+                          name="job_description"
+                          placeholder="Paste the job description here...">{{ job_text }}</textarea>
+
+                <button type="submit" class="btn-primary">
+                    Analyze description
+                </button>
+
+                <p class="hint">
+                    Tip: the more detailed the description, the better the analysis.
+                </p>
+            </form>
+        </section>
+
+        <section class="card card-results">
+            <h2>Analysis</h2>
+
+            {% if not result %}
+                <p class="empty-state">
+                    No analysis yet. Paste a job description and click
+                    <strong>Analyze</strong> to see matching skills and suggested bullet points.
+                </p>
+            {% else %}
+                <div class="grid-2">
+                    <div>
+                        <h3 class="section-title">Tech skills in job</h3>
+                        {% if result.job_tech_skills %}
+                            <div class="pill-row">
+                                {% for kw in result.job_tech_skills %}
+                                    <span class="pill pill-tech">{{ kw }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="muted">No known tech skills detected.</p>
+                        {% endif %}
+
+                        <h3 class="section-title">Soft skills in job</h3>
+                        {% if result.job_soft_skills %}
+                            <div class="pill-row">
+                                {% for kw in result.job_soft_skills %}
+                                    <span class="pill pill-soft">{{ kw }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="muted">No known soft skills detected.</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <h3 class="section-title">Match with your profile</h3>
+                        <div class="summary-box">
+                            <p><span class="summary-label">Matched tech:</span>
+                                {% if result.matched_tech %}
+                                    {{ result.matched_tech | join(", ") }}
+                                {% else %}
+                                    <span class="muted">none</span>
+                                {% endif %}
+                            </p>
+                            <p><span class="summary-label">Missing tech:</span>
+                                {% if result.missing_tech %}
+                                    {{ result.missing_tech | join(", ") }}
+                                {% else %}
+                                    <span class="muted">none</span>
+                                {% endif %}
+                            </p>
+                            <p><span class="summary-label">Matched soft:</span>
+                                {% if result.matched_soft %}
+                                    {{ result.matched_soft | join(", ") }}
+                                {% else %}
+                                    <span class="muted">none</span>
+                                {% endif %}
+                            </p>
+                        </div>
+
+                        <h3 class="section-title">Common keywords</h3>
+                        {% if result.common_keywords %}
+                            <div class="pill-row">
+                                {% for kw in result.common_keywords %}
+                                    <span class="pill pill-keyword">{{ kw }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="muted">No frequent keywords extracted.</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="section-suggestions">
+                    <h3 class="section-title">Suggested bullet points for your proposal</h3>
+                    <ul class="suggestions-list">
+                        {% for s in result.suggestions %}
+                            <li>{{ s }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer class="footer">
+        <span>Built by Aleksa · Flask + Python</span>
+    </footer>
+</div>
+</body>
+</html>
